@@ -17,9 +17,9 @@ void setup(){
     ranges.add(new MyRange(seeds[i],seeds[i]+seeds[i+1]));
   }
   
-  for(MyRange r: ranges){
-    r.display();
-  }
+  //for(MyRange r: ranges){
+  //  r.display();
+  //}
   
   for(int i = 1; i < arr.length; i++){
     String[] mapStrs = arr[i].split("\n");
@@ -28,11 +28,55 @@ void setup(){
       maps[j-1] = new MyMap(mapStrs[j]);
     }
     
-    ArrayList<MyRange> mapped;
+    ArrayList<MyRange> mapped = new ArrayList();
+    ArrayList<MyRange> unmapped = new ArrayList();
+    for(MyRange r : ranges){
+      unmapped.add(r);
+    }
+    
+    for(MyMap map : maps){
+      ArrayList<MyRange> buffer = new ArrayList();
+      for(int j = unmapped.size()-1; j>=0; j--){
+        if(map.inRange(unmapped.get(j))){
+          MyRange temp = unmapped.get(j);
+          unmapped.remove(j);
+          mapped.add(map.mapRange(map.rangeInRange(temp)));
+          ArrayList<MyRange> left = map.rangeOutOfRange(temp);
+          for(MyRange r: left){
+            buffer.add(r);
+          }
+        }
+      }
+      for(MyRange r: buffer){
+        unmapped.add(r);
+      }
+    }
+    
+    ranges = new ArrayList();
+    
+    for(MyRange r: mapped){
+      ranges.add(r);
+    }
+    
+    for(MyRange r: unmapped){
+      ranges.add(r);
+    }
+    
+    //println();
+    //for(MyRange r: ranges){
+    //  r.display();
+    //}
     //for(int k = 0; k < seeds.length; k++){
     //  long newSeed = MapSeed(seeds[k],maps);
     //  seeds[k] = newSeed;
     //}
+  }
+  
+  long min = ranges.get(0).start;
+  for(int i = 1; i < ranges.size(); i++){
+    if(ranges.get(i).start<min){
+      min = ranges.get(i).start;
+    }
   }
   
   //long min = seeds[0];
@@ -41,7 +85,7 @@ void setup(){
   //    min = seeds[i];
   //  }
   //}
-  //println("answer:"+min);
+  println("answer:"+min);
 }
 
 long MapSeed(long seed, MyMap[] maps){
