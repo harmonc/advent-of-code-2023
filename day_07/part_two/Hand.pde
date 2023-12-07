@@ -2,7 +2,7 @@ class Hand{
   String cards;
   int bid;
   int type;
-  char[] faces = {'A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'};
+  char[] faces = {'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'};
   Hand(String str){
     String[] arr = str.split(" ");
     cards = arr[0];
@@ -25,11 +25,16 @@ class Hand{
   }
   
   void determineType(){
+    int jokers = 0;
     int[] faceCount = new int[faces.length];
-    for(int i = 0; i < faceCount.length; i++){
-      for(int j = 0; j < cards.length(); j++){
-        if(cards.charAt(j)==faces[i]){
-          faceCount[i]++;
+    for(int j = 0; j < cards.length(); j++){
+      if(cards.charAt(j)=='J'){
+        jokers++;
+      }else{
+        for(int i = 0; i < faceCount.length; i++){
+          if(cards.charAt(j)==faces[i]){
+            faceCount[i]++;
+          }
         }
       }
     }
@@ -46,7 +51,7 @@ class Hand{
       break;
       case 2:
       //Four of a kind or Full House
-      if(finalCount.contains(4)){
+      if(finalCount.contains(4-jokers)){
         type = 1;  
       }else{
         type = 2;
@@ -54,7 +59,7 @@ class Hand{
       break;
       case 3:
       //Three of a kind or two pair
-      if(finalCount.contains(3)){
+      if(finalCount.contains(3-jokers)){
         type = 3;
       }else{
         type = 4;
